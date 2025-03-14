@@ -1,80 +1,92 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, OneToMany } from "typeorm";
-import { ProductImage } from "./product-image.entity";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ProductImage } from './';
+import { User } from '../../auth/entities/user.entity';
 
-@Entity({ name:'products'})
+@Entity({ name: 'products' })
 export class Product {
+
     @PrimaryGeneratedColumn('uuid')
-    id:string;
+    id: string;
 
     @Column('text', {
-        unique:true,
+        unique: true,
     })
     title: string;
 
-    @Column('float', {
-        default:0
+    @Column('float',{
+        default: 0
     })
-    price:number
+    price: number;
 
     @Column({
-        type:'text',
-        nullable:true
+        type: 'text',
+        nullable: true
     })
     description: string;
 
     @Column('text', {
-        unique:true
+        unique: true
     })
-    slot:string;
+    slug: string;
 
-    @Column('int',{
-        default:0
+    @Column('int', {
+        default: 0
     })
-    stock:number;
+    stock: number;
 
-    @Column('text', {
-        array:true
+    @Column('text',{
+        array: true
     })
     sizes: string[];
 
     @Column('text')
-    gender:string;
+    gender: string;
+
 
     @Column('text', {
         array: true,
-        default:[]
+        default: []
     })
-    tags: string[]
+    tags: string[];
 
+    // images
     @OneToMany(
         () => ProductImage,
         (productImage) => productImage.product,
         { cascade: true, eager: true }
     )
-    images?: ProductImage[]
+    images?: ProductImage[];
+
+
+    @ManyToOne(
+        () => User,
+        ( user ) => user.product,
+        { eager: true }
+    )
+    user: User
+
 
     @BeforeInsert()
-    checkSlotInsert(){
+    checkSlugInsert() {
 
-        if( !this.slot){
-            this.slot = this.title;
-
+        if ( !this.slug ) {
+            this.slug = this.title;
         }
 
-        this.slot = this.slot
-        .toLowerCase()
-        .replaceAll(' ','_')
-        .replaceAll("'",'')
-    }
+        this.slug = this.slug
+            .toLowerCase()
+            .replaceAll(' ','_')
+            .replaceAll("'",'')
 
+    }
 
     @BeforeUpdate()
-    checkSlotUpdate(){
-
-        this.slot = this.slot
-        .toLowerCase()
-        .replaceAll(' ','_')
-        .replaceAll("'",'')
+    checkSlugUpdate() {
+        this.slug = this.slug
+            .toLowerCase()
+            .replaceAll(' ','_')
+            .replaceAll("'",'')
     }
+
 
 }
