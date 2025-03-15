@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../entities/user.entity';
+import { JwtPayload } from '../interfaces/jwt-payload.interface';
 
 
 @Injectable()
@@ -28,17 +29,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // Aquí puedes implementar la validación del JWT
-  async validate(payload: any): Promise<User> {
+  async validate( payload: JwtPayload ): Promise<User> {
 
-    const { email } = payload;
+    const { id } = payload;
 
-    const user = await this.userRepository.findOneBy( { email } );
+    const user = await this.userRepository.findOneBy( { id } );
     if (!user) {
       throw new UnauthorizedException('Token not valid');
     }
 
     if ( !user.isActive ) {
-        throw new UnauthorizedException('User is inactive, talk with and admin')
+        throw new UnauthorizedException('User is inactive, talk with an admin')
     }
 
 

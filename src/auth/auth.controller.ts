@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Headers,  SetMetadata } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto, CreateUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,6 +9,7 @@ import { RoleProtected } from './decorators/role-protected/role-protected.decora
 import { ValidRoles } from './interfaces/valid-roles.interface';
 import { Auth } from './decorators/auth.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { IncomingHttpHeaders } from 'http';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -41,7 +42,8 @@ export class AuthController {
     //@Req() request: Express.Request
     @GetUser() user:User,
     @GetUser('email') userEmail:string,
-    @RawHeaders() rawHeaders: string[]
+    @RawHeaders() rawHeaders: string[],
+    @Headers() headers: IncomingHttpHeaders,
   ){
     //console.log(request)
     console.log({ user })
@@ -50,7 +52,8 @@ export class AuthController {
       message: 'Hola Mundo Private',
       user,
       userEmail,
-      rawHeaders
+      rawHeaders,
+      headers
       
     }
   }
@@ -62,7 +65,10 @@ export class AuthController {
   privateRoute2(
     @GetUser() user:User
   ){
-    return 'Hola';
+    return {
+      ok:true,
+      user
+    };
   }
 
   @Get('private3')

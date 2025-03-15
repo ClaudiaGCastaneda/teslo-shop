@@ -67,7 +67,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { email },
       select: { email:true, password:true, id:true}
-    })
+    });
 
     if ( !user ) throw new UnauthorizedException('Credentials are not valid (email)');
 
@@ -87,6 +87,8 @@ export class AuthService {
 
   private handleDBErrors (error: any) {
     if ( error.code === '23505' )
+      throw new BadRequestException( error.detail )
+
       throw new BadRequestException('Please check server logs');
   }
 
