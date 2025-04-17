@@ -17,11 +17,11 @@ npm install pg --save
 4. Clonar el archivo ````.env_template```` y renombrarlo a  ````.env````
 5. Levantar la base de datos en modo observador (opción 1)
 `````
-docker-componse up 
+docker-compose up 
 `````
 5. Levantar la base de datos en segundo plano (opción 2)
 `````
-docker-componse up -d
+docker-compose up -d
 `````
 6. Levantar: ````npm run start:dev````
 
